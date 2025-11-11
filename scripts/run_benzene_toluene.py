@@ -12,13 +12,8 @@ from scipy.optimize import fsolve
 from scipy.integrate import cumulative_trapezoid
 from scipy.integrate import solve_ivp
 
-# Get the absolute path to the folder containing your package
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, project_root)  # add it at the front of sys.path
-
-
-from phase_sep.mixture_prop import enthalpy_liquid_mixture
-from phase_sep.column_models import column_ode, sample_column
+from .mixture_prop import enthalpy_liquid_mixture
+from .column_models import column_ode, sample_column
 
 
 

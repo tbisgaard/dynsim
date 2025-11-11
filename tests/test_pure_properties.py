@@ -10,13 +10,8 @@ import os
 import pytest
 
 
-# Get the absolute path to the folder containing your package
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, project_root)  # add it at the front of sys.path
-
-
-from phase_sep.pure_comp_prop import density_liquid, density_gas, surface_tension, saturation_pressure, enthalpy_gas, enthalpy_liquid, heat_of_vaporisation, const_pressure_heat_capacity_gas, const_pressure_heat_capacity_liquid
-from phase_sep.system_parameters import SystemParameters
+from .pure_comp_prop import density_liquid, density_gas, surface_tension, saturation_pressure, enthalpy_gas, enthalpy_liquid, heat_of_vaporisation, const_pressure_heat_capacity_gas, const_pressure_heat_capacity_liquid
+from .system_parameters import SystemParameters
 
 
 def test_density_liquid_known_component():

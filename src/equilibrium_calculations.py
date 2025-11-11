@@ -8,8 +8,9 @@ Created on Mon Oct 20 09:52:07 2025
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
-from phase_sep.mixture_prop import vapour_liquid_equilibrium_constant
-from phase_sep.pure_comp_prop import saturation_pressure
+
+from .mixture_prop import vapour_liquid_equilibrium_constant
+from .pure_comp_prop import saturation_pressure
 
 def solve_flash(parameters, temperature=0, pressure=0, composition_liquid=0, composition_gas=0, composition_overall=0):
     if ((temperature==0) and (composition_gas==0)):

@@ -7,8 +7,8 @@ Created on Mon Oct 13 13:49:45 2025
 
 import numpy as np
 
-from phase_sep.util_general import gas_constant, acceleration_constant, step_function
-from phase_sep.mixture_prop import molecular_mass_mixture, density_liquid_mixture, density_gas_mixture, enthalpy_gas_mixture, enthalpy_liquid_mixture, vapour_liquid_equilibrium_constant, const_pressure_heat_capacity_liquid_mixture
+from .util_general import gas_constant, acceleration_constant, step_function
+from .mixture_prop import molecular_mass_mixture, density_liquid_mixture, density_gas_mixture, enthalpy_gas_mixture, enthalpy_liquid_mixture, vapour_liquid_equilibrium_constant, const_pressure_heat_capacity_liquid_mixture
 
 
 def column(t, X, u, system):

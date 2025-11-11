@@ -5,7 +5,7 @@ Created on Wed Oct 15 13:56:22 2025
 @author: biss3
 """
 
-from phase_sep.data_loader import load_pure_comp_properties, load_liquid_mixture_model
+from .data_loader import load_pure_comp_properties, load_liquid_mixture_model
 
 class SystemParameters:
     def __init__(self, components, model_liquid="ideal"):

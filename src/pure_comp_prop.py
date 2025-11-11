@@ -8,7 +8,7 @@ Created on Thu Oct  9 12:58:07 2025
 
 import os
 import numpy as np
-from phase_sep.util_general import gas_constant
+from .util_general import gas_constant
 
 def molecular_mass(parameters):
     """
