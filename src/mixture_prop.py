@@ -6,9 +6,9 @@ Created on Thu Oct  9 19:02:17 2025
 """
 
 import numpy as np
-from .util_general import gas_constant
-from .pure_comp_prop import molecular_mass, density_liquid, density_gas, saturation_pressure, enthalpy_gas, enthalpy_liquid, const_pressure_heat_capacity_liquid, const_pressure_heat_capacity_gas
-from .activity_coefficient_models import unifac
+from util_general import gas_constant
+from pure_comp_prop import molecular_mass, density_liquid, density_gas, saturation_pressure, enthalpy_gas, enthalpy_liquid, const_pressure_heat_capacity_liquid, const_pressure_heat_capacity_gas
+from activity_coefficient_models import unifac
 
 def molecular_mass_mixture(parameters, composition):
     

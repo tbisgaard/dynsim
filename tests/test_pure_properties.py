@@ -10,8 +10,8 @@ import os
 import pytest
 
 
-from .pure_comp_prop import density_liquid, density_gas, surface_tension, saturation_pressure, enthalpy_gas, enthalpy_liquid, heat_of_vaporisation, const_pressure_heat_capacity_gas, const_pressure_heat_capacity_liquid
-from .system_parameters import SystemParameters
+from pure_comp_prop import density_liquid, density_gas, surface_tension, saturation_pressure, enthalpy_gas, enthalpy_liquid, heat_of_vaporisation, const_pressure_heat_capacity_gas, const_pressure_heat_capacity_liquid
+from system_parameters import SystemParameters
 
 
 def test_density_liquid_known_component():

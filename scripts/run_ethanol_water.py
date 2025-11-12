@@ -13,9 +13,9 @@ from scipy.optimize import fsolve
 from scipy.integrate import cumulative_trapezoid
 from scipy.integrate import solve_ivp
 
-from .system_parameters import SystemParameters
-from .mixture_prop import enthalpy_liquid_mixture
-from .column_models import column_ode, sample_column
+from system_parameters import SystemParameters
+from mixture_prop import enthalpy_liquid_mixture
+from column_models import column_ode, sample_column
 
 
 system = SystemParameters(
@@ -84,7 +84,7 @@ plt.plot(x_ss[:,-1,0], y_ss[:,-1,0],'o')
 plt.show()
 
 
-from phase_sep.equilibrium_calculations import solve_flash
+from equilibrium_calculations import solve_flash
 x1 = np.linspace(0.0, 1.0, num=150)
 x = np.hstack((x1[:, None], 1 - x1[:, None]))
 P = np.atleast_1d(P_ss[0,-1])

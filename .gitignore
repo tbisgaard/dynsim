@@ -1,0 +1,19 @@
+# Virtual environment folders
+venv*/
+env/
+.venv*/
+.env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment variables file
+.env
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# macOS / Windows / Linux clutter
+.DS_Store
+Thumbs.db

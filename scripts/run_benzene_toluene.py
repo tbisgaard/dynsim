@@ -12,8 +12,8 @@ from scipy.optimize import fsolve
 from scipy.integrate import cumulative_trapezoid
 from scipy.integrate import solve_ivp
 
-from .mixture_prop import enthalpy_liquid_mixture
-from .column_models import column_ode, sample_column
+from mixture_prop import enthalpy_liquid_mixture
+from column_models import column_ode, sample_column
 
 
 

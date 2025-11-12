@@ -10,9 +10,9 @@ import os
 import pytest
 import numpy as np
 
-from .mixture_prop import molecular_mass_mixture, density_liquid_mixture, density_gas_mixture, enthalpy_gas_mixture, enthalpy_liquid_mixture, vapour_liquid_equilibrium_constant, activity_coefficient, const_pressure_heat_capacity_liquid_mixture
-from .activity_coefficient_models import unifac
-from .system_parameters import SystemParameters
+from mixture_prop import molecular_mass_mixture, density_liquid_mixture, density_gas_mixture, enthalpy_gas_mixture, enthalpy_liquid_mixture, vapour_liquid_equilibrium_constant, activity_coefficient, const_pressure_heat_capacity_liquid_mixture
+from activity_coefficient_models import unifac
+from system_parameters import SystemParameters
 
 
 def test_molecular_mass_mixture_component():
