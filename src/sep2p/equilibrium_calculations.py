@@ -9,8 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
 
-from .mixture_prop import vapour_liquid_equilibrium_constant
-from .pure_comp_prop import saturation_pressure
+from sep2p import mixture_prop
+from sep2p import pure_comp_prop
 
 def solve_flash(parameters, temperature=0, pressure=0, composition_liquid=0, composition_gas=0, composition_overall=0):
     if ((temperature==0) and (composition_gas==0)):
@@ -27,7 +27,7 @@ def solve_flash(parameters, temperature=0, pressure=0, composition_liquid=0, com
         def solve_flash_objective(X, parameters, P, x):
             T_sol = X[0:NS]
             
-            K_calc, y_calc = vapour_liquid_equilibrium_constant(parameters, T_sol, P, x)
+            K_calc, y_calc = mixture_prop.vapour_liquid_equilibrium_constant(parameters, T_sol, P, x)
 
             objective = 1 - np.sum(K_calc*x, axis=1)
             
@@ -36,7 +36,7 @@ def solve_flash(parameters, temperature=0, pressure=0, composition_liquid=0, com
         sol = fsolve(solve_flash_objective, X_init, args=(parameters, P, x))
         T = np.array(sol[0:NS])
 
-        y = vapour_liquid_equilibrium_constant(parameters, T, P, x)[1]
+        y = mixture_prop.vapour_liquid_equilibrium_constant(parameters, T, P, x)[1]
         return T, y
     
     elif ((pressure==0) and (composition_gas==0)):
@@ -47,14 +47,14 @@ def solve_flash(parameters, temperature=0, pressure=0, composition_liquid=0, com
        NS, NC = x.shape
        
        Tbp = parameters["temperature_normal_boiling"][None, :]
-       Pbp = saturation_pressure(parameters, T)
+       Pbp = pure_comp_prop.saturation_pressure(parameters, T)
        P_init = np.sum(Pbp*x, axis=1)
        X_init = P_init
                
        def solve_flash_objective(X, parameters, T, x):
            P_sol = X[0:NS]
            
-           K_calc, y_calc = vapour_liquid_equilibrium_constant(parameters, T, P_sol, x)
+           K_calc, y_calc = mixture_prop.vapour_liquid_equilibrium_constant(parameters, T, P_sol, x)
 
            objective = 1 - np.sum(K_calc*x, axis=1)
            
@@ -63,7 +63,7 @@ def solve_flash(parameters, temperature=0, pressure=0, composition_liquid=0, com
        sol = fsolve(solve_flash_objective, X_init, args=(parameters, T, x))
        P = np.array(sol[0:NS])
 
-       y = vapour_liquid_equilibrium_constant(parameters, T, P, x)[1]
+       y = mixture_prop.vapour_liquid_equilibrium_constant(parameters, T, P, x)[1]
        return P, y
     return 1
 

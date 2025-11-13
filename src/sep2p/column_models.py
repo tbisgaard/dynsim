@@ -7,9 +7,11 @@ Created on Mon Oct 13 13:49:45 2025
 
 import numpy as np
 
-from util_general import gas_constant, acceleration_constant, step_function
-from mixture_prop import molecular_mass_mixture, density_liquid_mixture, density_gas_mixture, enthalpy_gas_mixture, enthalpy_liquid_mixture, vapour_liquid_equilibrium_constant, const_pressure_heat_capacity_liquid_mixture
-
+#from util_general import gas_constant, acceleration_constant, step_function
+#from mixture_prop import molecular_mass_mixture, density_liquid_mixture, density_gas_mixture, enthalpy_gas_mixture, enthalpy_liquid_mixture, vapour_liquid_equilibrium_constant, const_pressure_heat_capacity_liquid_mixture
+from sep2p import utils
+from sep2p import phys_constants
+from sep2p import mixture_prop
 
 def column(t, X, u, system):
     
@@ -47,17 +49,17 @@ def column(t, X, u, system):
     x = M_L / np.tile(np.reshape(MT_L, (NS, 1)), (1, NC))# Liquid molefraction[-]
     
     # Physical properties
-    rho_L = density_liquid_mixture(system.parameters, T, x)
+    rho_L = mixture_prop.density_liquid_mixture(system.parameters, T, x)
     # rho_V = density_gas_mixture(T, np.ones_like(T), x, components)
-    MW_L = molecular_mass_mixture(system.parameters, x)
+    MW_L = mixture_prop.molecular_mass_mixture(system.parameters, x)
     
     
     # VLE
     # P = Pcnd + np.linspace(0, (NS-1) * dPtray, NS)
     # P[Ncpr:NS] = P[Ncpr:NS] + Pdiff
-    KeqP = vapour_liquid_equilibrium_constant(system.parameters, T, np.ones_like(T), x)[0]
+    KeqP = mixture_prop.vapour_liquid_equilibrium_constant(system.parameters, T, np.ones_like(T), x)[0]
     P = np.sum(KeqP * x, 1)
-    y = vapour_liquid_equilibrium_constant(system.parameters, T, P, x)[1]
+    y = mixture_prop.vapour_liquid_equilibrium_constant(system.parameters, T, P, x)[1]
     y[0, :] = x[0, :]  # Total condenser
     
     
@@ -95,16 +97,16 @@ def column(t, X, u, system):
     H[1:NS-1] = MT_L[1:NS-1] * MW_L[1:NS-1] / rho_L[1:NS-1] / A_T  #[m]
     H[NS-1] = 0
     dHrel = H/Hwr - 1                       # Rel. driving force, weir hight [-]
-    dP_loss = rho_L*gas_constant()*H             # Tray pressure drop [Pa]
+    dP_loss = rho_L*phys_constants.ACCELERATION_CONSTANT*H# Tray pressure drop [Pa]
     dP[0] = 0
     dP[1:NS] = P[1:NS] - P[0:NS-1] - dP_loss[0:NS-1]*(dP_loss[0:NS-1]>0)
     dPrel = dP/Pref                         # Rel. driving force, pressure [-]
-    Li = cL * step_function(50*dHrel) * abs(dHrel)**1.5 * alphaL**0.5
-    Vi = cV * abs(dPrel)**0.5 * np.sign(dPrel) * alphaV**0.5 * step_function(50*dPrel)
+    Li = cL * utils.step_function(50*dHrel) * abs(dHrel)**1.5 * alphaL**0.5
+    Vi = cV * abs(dPrel)**0.5 * np.sign(dPrel) * alphaV**0.5 * utils.step_function(50*dPrel)
     
     
     # Perfect level control - Condenser Reflux drum
-    Li[0] = (Vi[1] - Vi[0]) * RR / (RR + 1) * step_function((Vi[1] - Vi[0])*100)
+    Li[0] = (Vi[1] - Vi[0]) * RR / (RR + 1) * utils.step_function((Vi[1] - Vi[0])*100)
     D = Vi[1] - Vi[0] - Li[0]
     # Perfect level control - Reboiler
     Li[NS-1] = 0
@@ -117,8 +119,8 @@ def column(t, X, u, system):
     Q[NS-1] = Q[NS-1] + Qrbl
     
     # Enthalpy
-    h_L = enthalpy_liquid_mixture(system.parameters, T, P, x)
-    h_V = enthalpy_gas_mixture(system.parameters, T, P, x)
+    h_L = mixture_prop.enthalpy_liquid_mixture(system.parameters, T, P, x)
+    h_V = mixture_prop.enthalpy_gas_mixture(system.parameters, T, P, x)
     
     
     # ========== Conservation equations ==========
@@ -167,8 +169,8 @@ def column(t, X, u, system):
     dMhTdt[i] = dMhTdt[i] + F[i] * hF[i]
     
     # Convert energy balance to temperature derivative
-    hLdM_Ldt = enthalpy_liquid_mixture(system.parameters, T, P, dM_Ldt)
-    M_LCPL = const_pressure_heat_capacity_liquid_mixture(system.parameters, T, P, M_L)
+    hLdM_Ldt = mixture_prop.enthalpy_liquid_mixture(system.parameters, T, P, dM_Ldt)
+    M_LCPL = mixture_prop.const_pressure_heat_capacity_liquid_mixture(system.parameters, T, P, M_L)
     dTdt = (dMhTdt - hLdM_Ldt) / (M_LCPL)
     
     

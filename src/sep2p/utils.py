@@ -6,13 +6,6 @@ Created on Sat Oct 11 21:08:00 2025
 """
 import numpy as np
 
-
-def gas_constant():
-    return 8.314
-
-def acceleration_constant():
-    return 9.82  #[m/s^2]
-
 def step_function(t):
     # From 0 to 1 after in t inteval from 0 to 1
     t = (t>0)*t

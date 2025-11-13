@@ -6,13 +6,11 @@ Created on Thu Oct  9 19:02:17 2025
 """
 
 import numpy as np
-from util_general import gas_constant
-from pure_comp_prop import molecular_mass, density_liquid, density_gas, saturation_pressure, enthalpy_gas, enthalpy_liquid, const_pressure_heat_capacity_liquid, const_pressure_heat_capacity_gas
-from activity_coefficient_models import unifac
+from sep2p import utils, pure_comp_prop, activity_coefficient_models
 
 def molecular_mass_mixture(parameters, composition):
     
-    MW = molecular_mass(parameters)
+    MW = pure_comp_prop.molecular_mass(parameters)
     
     MW = np.array(MW, ndmin=1)[None, :]
     x = np.atleast_2d(composition)
@@ -25,8 +23,8 @@ def molecular_mass_mixture(parameters, composition):
 
 
 def density_liquid_mixture(parameters, temperature, composition):
-    rho0_L = density_liquid(parameters, temperature)
-    MW0 = molecular_mass(parameters)
+    rho0_L = pure_comp_prop.density_liquid(parameters, temperature)
+    MW0 = pure_comp_prop.molecular_mass(parameters)
     MW_avg = molecular_mass_mixture(parameters, composition)
     
     x = np.atleast_2d(composition)
@@ -41,8 +39,8 @@ def density_liquid_mixture(parameters, temperature, composition):
 
 
 def density_gas_mixture(parameters, temperature, pressure, composition):
-    rho0_G = density_gas(parameters, temperature, pressure)
-    MW0 = molecular_mass(parameters)
+    rho0_G = pure_comp_prop.density_gas(parameters, temperature, pressure)
+    MW0 = pure_comp_prop.molecular_mass(parameters)
     MW_avg = molecular_mass_mixture(parameters, composition)
     
     x = np.atleast_2d(composition)
@@ -57,7 +55,7 @@ def density_gas_mixture(parameters, temperature, pressure, composition):
 
 
 def enthalpy_gas_mixture(parameters, temperature, pressure, composition):
-    h_G = enthalpy_gas(parameters, temperature, pressure)
+    h_G = pure_comp_prop.enthalpy_gas(parameters, temperature, pressure)
     
     x = np.atleast_2d(composition)
     
@@ -69,7 +67,7 @@ def enthalpy_gas_mixture(parameters, temperature, pressure, composition):
     
 
 def enthalpy_liquid_mixture(parameters, temperature, pressure, composition):
-    h_L = enthalpy_liquid(parameters, temperature, pressure)
+    h_L = pure_comp_prop.enthalpy_liquid(parameters, temperature, pressure)
     
     x = np.atleast_2d(composition)
     
@@ -82,7 +80,7 @@ def enthalpy_liquid_mixture(parameters, temperature, pressure, composition):
 
 
 def vapour_liquid_equilibrium_constant(parameters, temperature, pressure, composition):
-    Psat = saturation_pressure(parameters, temperature)
+    Psat = pure_comp_prop.saturation_pressure(parameters, temperature)
     gamma = activity_coefficient(parameters, temperature, pressure, composition)
     
     P = np.array(pressure, ndmin=1)[:, None]
@@ -95,14 +93,14 @@ def vapour_liquid_equilibrium_constant(parameters, temperature, pressure, compos
 
 def activity_coefficient(parameters, temperature, pressure, composition):
     if (parameters["model_liquid"].lower()=="unifac1p"):
-        gamma = unifac(parameters, temperature, composition)
+        gamma = activity_coefficient_models.unifac(parameters, temperature, composition)
     else:
         gamma = np.ones_like(composition)  # Ideal
     return gamma
 
 
 def const_pressure_heat_capacity_liquid_mixture(parameters, temperature, pressure, composition):
-    CP_L = const_pressure_heat_capacity_liquid(parameters, temperature, pressure)
+    CP_L = pure_comp_prop.const_pressure_heat_capacity_liquid(parameters, temperature, pressure)
     
     x = np.atleast_2d(composition)
     

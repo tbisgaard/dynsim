@@ -5,16 +5,17 @@ Created on Wed Oct 15 13:56:22 2025
 @author: biss3
 """
 
-from data_loader import load_pure_comp_properties, load_liquid_mixture_model
+from sep2p import data_loader
 
+# consider dataclass
 class SystemParameters:
     def __init__(self, components, model_liquid="ideal"):
         if isinstance(components, str):
             # Convert to string for iterable
             components = [components]
         self.components = components  # list of Component objects
-        parameters_pure_comp = load_pure_comp_properties(components)
-        parameters_mixture_liquid = load_liquid_mixture_model(components, model_liquid)
+        parameters_pure_comp = data_loader.load_pure_comp_properties(components)
+        parameters_mixture_liquid = data_loader.load_liquid_mixture_model(components, model_liquid)
         self.parameters = parameters_pure_comp | parameters_mixture_liquid
         self.parameters["number_of_components"] = len(components)
         self.column = {

@@ -1,0 +1,23 @@
+Metadata-Version: 2.4
+Name: dynsim
+Version: 0.1.0
+Summary: A simple example project
+Author-email: Thomas Bisgaard Astrup <biss3n@hotmail.com>
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: black; extra == "dev"
+
+# dynsim
+Dynamic simulation of chemical engineering process units
+
+Unit database:
+- Distillation
+
+Queue:
+- Compartment model

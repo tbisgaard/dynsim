@@ -6,9 +6,8 @@ Created on Thu Oct  9 12:58:07 2025
 """
 
 
-import os
 import numpy as np
-from util_general import gas_constant
+from sep2p import phys_constants
 
 def molecular_mass(parameters):
     """
@@ -102,7 +101,7 @@ def density_gas(parameters, temperature, pressure):
     T = np.array(temperature, ndmin=1)[:, None]
     P = np.array(pressure, ndmin=1)[:, None]
     
-    density_gas_components = MW*P/T/gas_constant()/acentric_factor
+    density_gas_components = MW*P/T/phys_constants.GAS_CONSTANT/acentric_factor
     
     if density_gas_components.shape == (1, 1):
         return density_gas_components.item()
