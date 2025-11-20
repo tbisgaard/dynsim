@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Oct  9 10:22:58 2025
-
-@author: biss3
-"""
-
 import numpy as np
 
 def unifac(parameters, temperature, composition):
@@ -30,6 +23,11 @@ def unifac(parameters, temperature, composition):
         - RQ  : (NG x 2) array, RQ[:,0]=R (group volume), RQ[:,1]=Q (group surface area)
         - aij : (NG x NG) interaction parameter matrix
         - bij : (NG x NG) temperature-dependent interaction parameter matrix
+    Returns
+    -------
+    gamma : ndarray (NS x NC)
+        Activity coefficients
+        
     """
 
     nu = parameters["stoichiometry"]            # (NG, NC)

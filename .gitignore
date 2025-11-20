@@ -16,4 +16,9 @@ __pycache__/
 
 # macOS / Windows / Linux clutter
 .DS_Store
-Thumbs.db
+
+# Egg and build folders
+*.egg
+*.egg-info/
+dist/
+build/

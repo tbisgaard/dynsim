@@ -15,6 +15,7 @@ from sep2p import activity_coefficient_models
 from sep2p import equilibrium_calculations
 from sep2p import column_models
 from sep2p import phys_constants
+from sep2p import plots
 #from .models import User
 
 # Optional metadata

@@ -1,34 +1,20 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Oct  9 19:02:17 2025
-
-@author: biss3
-"""
-
 import numpy as np
-from sep2p import utils, pure_comp_prop, activity_coefficient_models
+from sep2p import pure_comp_prop, activity_coefficient_models
 
-def molecular_mass_mixture(parameters, composition):
-    
+def molecular_mass_mixture(parameters, composition): 
     MW = pure_comp_prop.molecular_mass(parameters)
-    
     MW = np.array(MW, ndmin=1)[None, :]
     x = np.atleast_2d(composition)
-    
     molecular_mass_mixture_components = np.sum(x*MW, axis=1)
-    
     if molecular_mass_mixture_components.size == 1:
         return molecular_mass_mixture_components.item()
     return molecular_mass_mixture_components
-
 
 def density_liquid_mixture(parameters, temperature, composition):
     rho0_L = pure_comp_prop.density_liquid(parameters, temperature)
     MW0 = pure_comp_prop.molecular_mass(parameters)
     MW_avg = molecular_mass_mixture(parameters, composition)
-    
     x = np.atleast_2d(composition)
-
     rhom0_L = rho0_L/MW0
     density_liquid_mixture_components = MW_avg * (1/np.sum(x/rhom0_L, axis=1))
 
@@ -36,60 +22,49 @@ def density_liquid_mixture(parameters, temperature, composition):
         return density_liquid_mixture_components.item()
     return density_liquid_mixture_components
 
-
-
 def density_gas_mixture(parameters, temperature, pressure, composition):
     rho0_G = pure_comp_prop.density_gas(parameters, temperature, pressure)
     MW0 = pure_comp_prop.molecular_mass(parameters)
     MW_avg = molecular_mass_mixture(parameters, composition)
-    
     x = np.atleast_2d(composition)
-
     rhom0_G = rho0_G/MW0
     density_gas_mixture_components = MW_avg * (1/np.sum(x/rhom0_G, axis=1))
-    
     if density_gas_mixture_components.size == 1:
         return density_gas_mixture_components.item()
     return density_gas_mixture_components
 
-
-
 def enthalpy_gas_mixture(parameters, temperature, pressure, composition):
     h_G = pure_comp_prop.enthalpy_gas(parameters, temperature, pressure)
-    
     x = np.atleast_2d(composition)
-    
     enthalpy_gas_mixture_components = np.sum(x*h_G, axis=1)
-    
     if enthalpy_gas_mixture_components.size == 1:
         return enthalpy_gas_mixture_components.item()
     return enthalpy_gas_mixture_components
-    
 
 def enthalpy_liquid_mixture(parameters, temperature, pressure, composition):
     h_L = pure_comp_prop.enthalpy_liquid(parameters, temperature, pressure)
-    
     x = np.atleast_2d(composition)
-    
     enthalpy_liquid_mixture_components = np.sum(x*h_L, axis=1)
-    
     if enthalpy_liquid_mixture_components.size == 1:
         return enthalpy_liquid_mixture_components.item()
     return enthalpy_liquid_mixture_components
 
-
+def heat_of_vaporisation_mixture(parameters, temperature, composition):
+    dhvap = pure_comp_prop.heat_of_vaporisation(parameters, temperature)
+    x = np.atleast_2d(composition)
+    heat_of_vaporisation_mixture_components = np.sum(x*dhvap, axis=1)
+    if heat_of_vaporisation_mixture_components.size == 1:
+        return heat_of_vaporisation_mixture_components.item()
+    return heat_of_vaporisation_mixture_components
 
 def vapour_liquid_equilibrium_constant(parameters, temperature, pressure, composition):
     Psat = pure_comp_prop.saturation_pressure(parameters, temperature)
     gamma = activity_coefficient(parameters, temperature, pressure, composition)
-    
     P = np.array(pressure, ndmin=1)[:, None]
     x = np.atleast_2d(composition)
-    
     K = gamma * Psat / P
     y = K * x
     return K, y
-
 
 def activity_coefficient(parameters, temperature, pressure, composition):
     if (parameters["model_liquid"].lower()=="unifac1p"):
@@ -98,14 +73,10 @@ def activity_coefficient(parameters, temperature, pressure, composition):
         gamma = np.ones_like(composition)  # Ideal
     return gamma
 
-
 def const_pressure_heat_capacity_liquid_mixture(parameters, temperature, pressure, composition):
     CP_L = pure_comp_prop.const_pressure_heat_capacity_liquid(parameters, temperature, pressure)
-    
     x = np.atleast_2d(composition)
-    
     const_pressure_heat_capacity_liquid_mixture_components = np.sum(x*CP_L, axis=1)
-    
     if const_pressure_heat_capacity_liquid_mixture_components.size == 1:
         return const_pressure_heat_capacity_liquid_mixture_components.item()
     return const_pressure_heat_capacity_liquid_mixture_components

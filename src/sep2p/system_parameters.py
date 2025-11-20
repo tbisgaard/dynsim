@@ -1,15 +1,17 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 15 13:56:22 2025
-
-@author: biss3
-"""
-
 from sep2p import data_loader
 
 # consider dataclass
 class SystemParameters:
     def __init__(self, components, model_liquid="ideal"):
+        """
+        Initialize system parameters for SEP2P simulations.
+        Parameters:
+        ----------
+        components : list of str
+            List of component names in the system.
+        model_liquid : str, optional
+            Model for liquid phase activity coefficients. Default is "ideal".
+        """
         if isinstance(components, str):
             # Convert to string for iterable
             components = [components]

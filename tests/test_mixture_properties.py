@@ -62,6 +62,15 @@ def test_enthalpy_liquid_mixture_component():
     expected = 26781.176
     assert abs(calculated - expected) < 1e-0
 
+def test_heat_of_vaporisation_component():
+    T = 350
+    components = ["Benzene", "Toluene"]
+    system = system_parameters.SystemParameters(components)
+    x = np.array([0.25, 0.75])
+    calculated = mixture_prop.heat_of_vaporisation_mixture(system.parameters, T, x)
+    expected = 34359.584
+    assert abs(calculated - expected) < 1e-0
+
 def test_vapour_liquid_equilibrium_constant_component():
     T = 350
     P = 101325

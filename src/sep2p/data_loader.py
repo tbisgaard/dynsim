@@ -1,15 +1,19 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 15 09:02:32 2025
-
-@author: biss3
-"""
-
-import os
 import pandas as pd
 
-
 def load_pure_comp_properties(components):
+    """
+    Load pure component properties from CSV database file.
+    The CSV file should have a column "component" with component names,
+    and other columns with properties.
+    Parameters
+    ----------
+    components : list of str
+        List of component names to load properties for.
+    Returns
+    -------
+    dict
+        Dictionary with component properties arrays.
+    """
     def try_data_clean_up(col):
         try:
             # pd.to_numeric will raise if conversion fails (no errors arg)
@@ -26,10 +30,29 @@ def load_pure_comp_properties(components):
     for col in db_components.columns:
         db_components[col] = try_data_clean_up(db_components[col])
     
-    return {col: db_components[col].to_numpy() for col in db_components.columns}
+    return {
+        "components": db_components.index.to_numpy(),
+        **{col: db_components[col].to_numpy() for col in db_components.columns}
+    }
 
 
 def load_liquid_mixture_model(components, model_liquid="ideal", model_gas="ideal"):
+    """
+    Load liquid mixture model parameters from CSV database files.
+    Currently supports "unifac1p" model or "ideal".
+    Parameters
+    ----------
+    components : list of str
+        List of component names in the mixture.
+    model_liquid : str, optional
+        Liquid mixture model to use. Default is "ideal".
+    model_gas : str, optional
+        Gas mixture model to use. Default is "ideal".
+    Returns
+    -------
+    dict
+        Dictionary with liquid mixture model parameters.
+    """
     param_liquid = {"model_liquid": "ideal"}
     
     if (model_liquid.lower()=="unifac1p"):        

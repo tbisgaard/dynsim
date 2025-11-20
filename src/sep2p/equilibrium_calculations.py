@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Oct 20 09:52:07 2025
-
-@author: biss3
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import fsolve
@@ -13,6 +6,32 @@ from sep2p import mixture_prop
 from sep2p import pure_comp_prop
 
 def solve_flash(parameters, temperature=0, pressure=0, composition_liquid=0, composition_gas=0, composition_overall=0):
+    """
+    Solves flash calculations for binary and multicomponent mixtures.
+    
+    Depending on which variables are set to zero, the function calculates the missing
+    variables based on the provided inputs.
+
+    UNDER DEVELOPMENT....
+
+    Parameters
+    ----------
+    temperature : array-like (NS,)
+        Temperatures
+    pressure : array-like (NS,)
+        Pressures
+    composition_liquid : ndarray (NS x NC) 
+        Mole fractions in liquid phase
+    composition_gas : ndarray (NS x NC)
+        Mole fractions in gas phase
+    composition_overall : ndarray (NS x NC)
+        Overall mole fractions
+    Returns
+    -------
+    Depending on the input variables set to zero, returns the calculated variables.
+    - If temperature and composition_gas are zero: returns temperature and composition_gas
+    - If pressure and composition_gas are zero: returns pressure and composition_gas
+    """
     if ((temperature==0) and (composition_gas==0)):
         # Given pressure and liquid composition
         # Calculate temperature and gas compositions
@@ -67,13 +86,48 @@ def solve_flash(parameters, temperature=0, pressure=0, composition_liquid=0, com
        return P, y
     return 1
 
+def generate_binary_phase_equilibrium_data(parameters, pressure, component1=0, component2=1, num_points=150):
+    """
+    Generates binary phase equilibrium data for given components at specified pressure.
+    Parameters
+    ----------
+    parameters : dict
+        System parameters including component information.
+    pressure : float
+        Pressure at which to generate the phase equilibrium data.
+    component1 : int or str, optional
+        Index or name of the first component. Default is 0.
+    component2 : int or str, optional
+        Index or name of the second component. Default is 1.
+    num_points : int, optional
+        Number of data points to generate. Default is 150.
+    Returns
+    -------
+    x1 : ndarray (num_points,)
+        Mole fractions of component1 in the liquid phase.
+    y1 : ndarray (num_points,)
+        Mole fractions of component1 in the vapour phase.
+    T : ndarray (num_points,)
+        Temperatures corresponding to the phase equilibrium data.   
+    """
+    if isinstance(component1, str):
+        key_light = parameters["components"].index(component1)
+        key_heavy = parameters["components"].index(component2)
+    elif isinstance(component1, int):
+        key_light = component1
+        key_heavy = component2
+    else:
+        raise ValueError("component1 and component2 must be str or int")
+        key_light = int(0)
+        key_heavy = int(1)
+    NC = len(parameters["components"])
 
-def binary_phase_diagram_Ty(parameters, pressure):
-    x1 = np.linspace(0.0, 1.0, num=150)
-    x = np.hstack((x1[:, None], 1 - x1[:, None]))
+    x1 = np.linspace(0.0, 1.0, num=num_points)
+    x = np.zeros((num_points, NC))#np.hstack((x1[:, None], 1 - x1[:, None]))
+    x[:, key_light] = x1
+    x[:, key_heavy] = 1 - x1
     P = np.atleast_1d(pressure)
-    
-    T = np.zeros(150)
+    T = np.zeros(num_points)
     y = np.zeros_like(x)
     for i in range(150):
         Ti, yi = solve_flash(parameters, pressure=P, composition_liquid=x[i,:])
@@ -81,43 +135,4 @@ def binary_phase_diagram_Ty(parameters, pressure):
         y[i, :] = yi
         
     y1 = y[:,0]
-    
-    plt.figure(1)
-    plt.plot(x1, y1, linestyle='-', color='b', label='Data')
-    plt.plot(x1, x1, linestyle='-', color='b', label='1')
-    plt.show()
-    
-    plt.figure(2)
-    plt.plot(x1, T, linestyle='-', color='b', label='Liquid')
-    plt.plot(y1, T, linestyle='-', color='r', label='Vapour')
-    plt.legend()
-    plt.show()
-
-def binary_phase_diagram_Py(parameters, temperature):
-    x1 = np.linspace(0.0, 1.0, num=150)
-    x = np.hstack((x1[:, None], 1 - x1[:, None]))
-    T = np.atleast_1d(temperature)
-    
-    P = np.zeros(150)
-    y = np.zeros_like(x)
-    
-    for i in range(150):
-        Pi, yi = solve_flash(parameters, temperature=T, composition_liquid=x[i,:])
-        P[i] = Pi
-        y[i, :] = yi
-        
-    y1 = y[:,0]
-    
-    plt.figure(1)
-    plt.plot(x1, y1, linestyle='-', color='b', label='Data')
-    plt.plot(x1, x1, linestyle='-', color='b', label='1')
-    plt.show()
-    
-    plt.figure(2, figsize=(5, 4), dpi=80)
-    plt.plot(x1, P/100000, linestyle='-', color='b', label='Liquid', linewidth=3)
-    plt.plot(y1, P/100000, linestyle='-', color='r', label='Vapour', linewidth=3)
-    plt.legend()
-    plt.ylabel("Pressure [bar]")
-    plt.xlabel("Molefraction Acetonitrile")
-    plt.title("Temperature 318K")
-    plt.show()
+    return x1, y1, T
